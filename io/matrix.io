@@ -14,15 +14,12 @@ Matrix writeToFile := method(fileName,
     f := File with(fileName)
     f remove
     f openForUpdating
-    f write(self asString)
+    f write(self serialized())
     f close
 )
 Matrix readFromFile := method(fileName,
-    f := File openForReading(fileName)
-    content := f readToEnd
-    f close
     new := Matrix clone
-    new copy(doString(content))
+    new copy(doFile(fileName))
 )
 
 Object dim := method(x, y,
