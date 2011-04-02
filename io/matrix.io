@@ -10,6 +10,20 @@ Matrix transpose := method(
             new set(x, y, self get(y, x))))
     new
 )
+Matrix writeToFile := method(fileName,
+    f := File with(fileName)
+    f remove
+    f openForUpdating
+    f write(self asString)
+    f close
+)
+Matrix readFromFile := method(fileName,
+    f := File openForReading(fileName)
+    content := f readToEnd
+    f close
+    new := Matrix clone
+    new copy(doString(content))
+)
 
 Object dim := method(x, y,
     s := List clone
@@ -38,3 +52,10 @@ new_matrix := matrix transpose
 new_matrix println
 for(x, 0, 1,
     for(y, 0, 2, (matrix get(x, y) == new_matrix get(y, x)) ifTrue("passed" println) ifFalse("you failed!" println)))
+
+"\nwrite and read to file\n--------------------" println
+matrix writeToFile("matrix.txt")
+readMatrix := matrix readFromFile("matrix.txt")
+readMatrix type println
+readMatrix println
+readMatrix get(0,0) type println
