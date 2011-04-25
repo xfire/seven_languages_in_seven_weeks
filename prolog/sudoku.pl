@@ -56,6 +56,11 @@ squares(Rows, Xn, XLen, YLen, Squares) :-
     squareCols(RowParts, Xn, XLen, YLen, SS),
     flatten(SS, Squares).
 
+pprint(Xs, N) :-
+    firstN(Xs, N, H, T),
+    write(H), write('\n'),
+    pprint(T, N).
+
 
 sudoku(Puzzle, Solution) :-
     length(Puzzle, 16),
@@ -73,6 +78,7 @@ sudoku(Puzzle, N, CellLen, CellX, CellY, Solution) :-
     Solution = Puzzle,
 
     fd_domain(Puzzle, 1, N),
+    fd_labelingff(Puzzle),
 
     rows(Puzzle, N, Rows),
     columns(Rows, N, Columns),
@@ -80,9 +86,18 @@ sudoku(Puzzle, N, CellLen, CellX, CellY, Solution) :-
     
     append(Rows, Columns, X),
     append(X, Squares, AllParts),
-    valid(AllParts).
+    valid(AllParts),
+
+    pprint(Solution, N).
 
 test1(S) :-
+    P = [_,_,2,3,
+         _,_,_,_,
+         _,_,_,_,
+         3,4,_,_],
+    sudoku(P, S).
+
+test2(S) :-
 	P = [_,6,_,1,_,4,_,5,_,
 	     _,_,8,3,_,5,6,_,_,
 	     2,_,_,_,_,_,_,_,1,
@@ -94,7 +109,7 @@ test1(S) :-
 	     _,4,_,5,_,8,_,7,_],
 	sudoku(P, S).
 
-test2(S) :-
+test3(S) :-
 	P = [_,_,4 ,_,_,3, _,7,_,
 	     _,8,_ ,_,7,_, _,_,_,
 	     _,7,_ ,_,_,8, 2,_,5,
@@ -106,7 +121,7 @@ test2(S) :-
 	     _,2,_ ,4,_,_, 5,_,_],
 	sudoku(P, S).
 
-test3(S) :-
+test4(S) :-
 	P = [_,4,3,_,8,_,2,5,_,
          6,_,_,_,_,_,_,_,_,
          _,_,_,_,_,1,_,9,4,
@@ -118,7 +133,7 @@ test3(S) :-
          _,3,4,_,9,_,7,1,_],
 	sudoku(P, S).
 
-test4(S) :-
+test5(S) :-
 	P = [8,_,3,_,2,9,7,1,6,
          _,_,6,_,1,8,5,_,4,
          _,_,_,_,6,_,_,_,8,
@@ -130,7 +145,7 @@ test4(S) :-
          5,_,_,9,8,1,4,6,3],
 	sudoku(P, S).
 
-test5(S) :-
+test6(S) :-
 	P = [_,_,_,1,5,_,_,7,_,
          1,_,6,_,_,_,8,2,_,
          3,_,_,8,6,_,_,4,_,
@@ -141,3 +156,4 @@ test5(S) :-
          _,1,7,_,_,_,2,_,8,
          _,5,_,_,3,7,_,_,_],
 	sudoku(P, S).
+
