@@ -1,5 +1,27 @@
 -module(doctor).
 -export([loop/0]).
+-export([start_monitor/0, monitor/0]).
+
+start_monitor() ->
+    spawn(?MODULE, monitor, []).
+
+monitor() ->
+    process_flag(trap_exit, true),
+    Pid = spawn_link(?MODULE, loop, []),
+    case lists:member(doctor, registered()) of
+        true -> unregister(doctor);
+        _ -> ok
+    end,
+    register(doctor, Pid),
+    doctor ! new,
+    receive
+        {'EXIT', Pid, normal} -> ok;
+        {'EXIT', Pid, shutdown} -> ok;
+        {'EXIT', Pid, _} ->
+            io:format("restarting doctor...~n"),
+            monitor()
+    end.
+
 
 loop() ->
     process_flag(trap_exit, true),
